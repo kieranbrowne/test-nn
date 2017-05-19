@@ -10,8 +10,9 @@
 
 ;; Training data
 (def train-x (im/new-image 32 32))
-(im/set-pixels train-x
-               (int-array (repeatedly 1024 colour/rand-colour)))
+(def make-random #(im/set-pixels train-x
+               (int-array (repeatedly 1024 colour/rand-colour))))
+(make-random)
 
 (def prep-image
   (comp flatten (partial map colour/values-rgb) im/get-pixels))
@@ -42,16 +43,17 @@
 (def sess (clojure-tensorflow.core/session))
 (def sess-run (partial session-run sess))
 (sess-run
- [(tf/global-variables-initializer)
+ [;(tf/global-variables-initializer)
   (tf/mean (tf/mean error))])
 
 ;; train a bit
-(sess-run
- [(repeat 1 optimizer)
-  (tf/mean (tf/mean error))])
+(dotimes [i 100]
+  (sess-run
+    [(repeat 5000 optimizer)
+     (tf/mean (tf/mean error))])
+  ;; save vars
+  (tf.save/save-vars sess "resources/snapshot.clj" [out]))
 
-;; save vars
-(tf.save/save-vars sess "resources/snapshot.clj" [out])
 
 
 ;; reload trained vars from snapshot
@@ -62,12 +64,12 @@
 
 ;; view output
 (def display (im/new-image 32 32))
-(im/set-pixels display
-               (int-array
-                (map (partial apply colour/rgb)
-                     (partition 3
-                                (first
-                                 (sess-run
-                                  [out]))))))
+;(im/set-pixels display
+;               (int-array
+;                (map (partial apply colour/rgb)
+;                     (partition 3
+;                                (first
+;                                 (sess-run
+;                                  [out]))))))
 
-(im/show display :zoom 10.0 :title "Trumpo")
+;(im/show display :zoom 10.0 :title "Trumpo")
