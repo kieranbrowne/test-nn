@@ -7,7 +7,7 @@
                  [clojure-tensorflow "0.1.5"]
                  [net.mikera/imagez "0.12.0"]
                  ]
-  :java-cmd "../../jdk1.8.0_05/bin/java" 
-  :jvm-opts ["-Djava.library.path=../../tf-test/native"]
+  ; :java-cmd "../../jdk1.8.0_05/bin/java" 
+  ; :jvm-opts ["-Djava.library.path=../../tf-test/native"]
   :plugins [[cider/cider-nrepl "0.14.0"]]
   )
